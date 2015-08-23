@@ -25,6 +25,8 @@ namespace SportsStore.WebUI.Controllers
         //    return View(repository.Products);
         //}
 
+        #region - Chapter 7
+
         // revised example - paginated listing of products
         //public ViewResult List(int page = 1)
         //{
@@ -34,12 +36,37 @@ namespace SportsStore.WebUI.Controllers
         //        .Take(PageSize));
         //}
 
-        // revised again - return a ViewModel that includes the Product list and the PagingInfo
-        public ViewResult List(int page = 1)
+        // revised again - return a View Model that includes the Product list and the PagingInfo
+        //public ViewResult List(int page = 1)
+        //{
+        //    ProductsListViewModel model = new ProductsListViewModel
+        //    {
+        //        Products = repository.Products
+        //            .OrderBy(p => p.ProductId)
+        //            .Skip((page - 1) * PageSize)
+        //            .Take(PageSize),
+        //        PagingInfo = new PagingInfo
+        //        {
+        //            CurrentPage = page,
+        //            ItemsPerPage = PageSize,
+        //            TotalItems = repository.Products.Count()
+        //        }
+        //    };
+        //    return View(model);
+        //}
+
+        #endregion
+
+
+        #region - Chapter 8
+
+        // Added current category to the view model
+        public ViewResult List(string category, int page = 1)
         {
             ProductsListViewModel model = new ProductsListViewModel
             {
                 Products = repository.Products
+                    .Where(p => category == null || p.Category == category)
                     .OrderBy(p => p.ProductId)
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize),
@@ -47,10 +74,15 @@ namespace SportsStore.WebUI.Controllers
                 {
                     CurrentPage = page,
                     ItemsPerPage = PageSize,
-                    TotalItems = repository.Products.Count()
-                }
+                    TotalItems = category == null ?
+                        repository.Products.Count() :
+                        repository.Products.Where(e => e.Category == category).Count()
+                },
+                CurrentCategory = category
             };
             return View(model);
         }
+
+        #endregion
     }
 }
