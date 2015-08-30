@@ -19,48 +19,6 @@ namespace SportsStore.WebUI.Controllers
             this.repository = productRepository;
         }
 
-        // initial example - full listing of products
-        //public ViewResult List()
-        //{
-        //    return View(repository.Products);
-        //}
-
-        #region - Chapter 7
-
-        // revised example - paginated listing of products
-        //public ViewResult List(int page = 1)
-        //{
-        //    return View(repository.Products
-        //        .OrderBy(p => p.ProductId)
-        //        .Skip((page - 1) * PageSize)
-        //        .Take(PageSize));
-        //}
-
-        // revised again - return a View Model that includes the Product list and the PagingInfo
-        //public ViewResult List(int page = 1)
-        //{
-        //    ProductsListViewModel model = new ProductsListViewModel
-        //    {
-        //        Products = repository.Products
-        //            .OrderBy(p => p.ProductId)
-        //            .Skip((page - 1) * PageSize)
-        //            .Take(PageSize),
-        //        PagingInfo = new PagingInfo
-        //        {
-        //            CurrentPage = page,
-        //            ItemsPerPage = PageSize,
-        //            TotalItems = repository.Products.Count()
-        //        }
-        //    };
-        //    return View(model);
-        //}
-
-        #endregion
-
-
-        #region - Chapter 8
-
-        // Added current category to the view model
         public ViewResult List(string category, int page = 1)
         {
             ProductsListViewModel model = new ProductsListViewModel
@@ -83,6 +41,18 @@ namespace SportsStore.WebUI.Controllers
             return View(model);
         }
 
-        #endregion
+
+        public FileContentResult GetImage(int productId)
+        {
+            Product prod = repository.Products.FirstOrDefault(p => p.ProductId == productId);
+            if (prod != null)
+            {
+                return File(prod.ImageData, prod.ImageMimeType);
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
